@@ -5,3 +5,15 @@ cli_log(){
     timestamp=$(date -u +"%Y-%m-%d%T%H:%M:%SZ")
     echo "== $script_name $timestamp $1"
 }
+
+log_conn_options(){
+	echo "
+    -U --user=user
+    -W --password=password
+    -p --port=port
+       --host=host
+    -n --name=name
+    -c --config=path/to/config
+    -h --help
+"
+}
