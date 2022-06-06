@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+set -e
+
+
+cli_help(){
+    cli_name=${0##*/}
+    echo "
+$cli_name
+Declarative SQL Migrations
+Version:
+
+Usage: sqld [option...] [command]
+
+Commands:
+    init 	Initialize database
+    create 	Create migration
+    apply	Apply migration
+    revert	Revert a migration
+
+Options:
+    -U --user=user
+    -W --password=password
+    -p --port=port
+       --host=host
+    -n --name=name
+    -c --config=path/to/config
+    -h --help
+"
+}
+
