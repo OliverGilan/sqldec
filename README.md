@@ -14,3 +14,16 @@ __Building from source__
 
 ### Usage
 
+`sqld init [options...]`
+Initializes database, schema, and migrations directory. If schema file and migrations directory already exists (if cloned from source control for example) then init will use those existing resources to initiate the database. As part of the initialization sqld will create a shadow database for the purposes of diffing. If no schema or migrations already exist then a base versioning schema will be created within the database to track versions.
+
+`sqld create [options...] [<migration-name>]`
+Diffs the current database schema with the schema.sql file specified. If there is no difference then no migration scripts will be created. <migration-name> allows you to specify a human readable migration name. If no name is specified one will be generated automatically.
+ This command simply creates the migration files but does not apply them. This allows you to modify the imperative migration scripts before applying the migration.
+
+`sqld apply [options...] [<migration-name>|<count>]`
+Applies the latest migrations to the database. If a <migration-name> is specified then sqld will run all migrations up to and including the specified name. You can instead provide a <count> and sqld will run <count> migrations since the current version.
+
+`sqld rever [options...] [<migration-name>|<count>]`
+Reverts the latest migrations on the database. If <migration-name> is specified all migrations after and including <migration-name> will be reverted. Otherwise if <count> is specified the last <count> migrations will be reverted. By default only the latest migration is reverted.
+
