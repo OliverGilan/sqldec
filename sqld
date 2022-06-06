@@ -1,7 +1,14 @@
 #!/usr/bin/env bash
 
-set -e
+set -o errexit -o pipefail -o noclobber -o nounset
+
 workdir=TODO
+
+! getopt --test > /dev/null 
+if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
+    echo 'I’m sorry, `getopt --test` failed in this environment.'
+    exit 1
+fi
 
 cli_help(){
     cli_name=${0##*/}

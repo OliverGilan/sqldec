@@ -16,4 +16,57 @@ log_conn_options(){
     -c --config=path/to/config
     -h --help
 "
+
+}
+
+parse_options(){
+	LONGOPTS=user:,password:,port:,host:,name:,config:,help
+	OPTIONS=U:W:p:n:c:h
+
+	! PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
+	if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
+    		# e.g. return value is 1
+    		#  then getopt has complained about wrong arguments to stdout
+    		exit 2
+	fi
+	
+	eval set -- "$PARSED"
+
+    U=- W=- p=- n=- c=- h=n
+    while true; do
+        case "$1" in
+            -U|--user)
+                U="$2"
+                shift 2
+                ;;
+            -W|--password)
+                W="$2"
+                shift 2
+                ;;
+            -p|--port)
+                p="$2"
+                shift 2
+                ;;
+            -n|--name)
+                n="$2"
+                shift 2
+                ;;
+            -c|--config)
+                c="$2"
+                shift 2
+                ;;
+            -h|--help)
+                h=y
+                shift
+                ;;
+            --)
+                shift
+                break
+                ;;
+            *)
+                echo "Unknown argument"
+                exit 3
+                ;;
+        esac
+    done
 }
