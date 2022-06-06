@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+
+cli_help_init(){
+
+	echo "
+
+Usage: sqld init
+"
+}

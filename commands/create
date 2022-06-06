@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+
+cli_help_create(){
+	echo "
+
+Usage: sqld create [options...] <migration-name>
+
+Arguments:
+	<migration-name>	The name of the migration
+
+Options:
+"
+}

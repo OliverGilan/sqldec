@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+
+cli_help_revert(){
+	
+	echo "
+Usage: sqld revert [options...] [<migration-name>|<count>]
+
+Arguments:
+	<migration-name>	optional. Reverts all migrations up to and including migration-name if specified. Otherwise just reverts latest migration.
+	<count>			optional. Reverts latest N migrations if specified. Default is 1.
+
+Options:
+"
+}

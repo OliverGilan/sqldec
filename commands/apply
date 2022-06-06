@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+
+cli_help_apply(){
+	echo "
+Usage: sqld apply [options...] [<migration-name>]
+
+Arguments:
+	<migration-name>	Optional. Runs specific migration. By default runs all the latest migrations since the latest run.
+
+Options:
+	--count n	Run N latest migrations.
+	I think the above option should be an argument like <migration-name>|<count>
+"
+}
