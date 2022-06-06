@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
-
+workdir=TODO
 
 cli_help(){
     cli_name=${0##*/}
@@ -29,3 +29,16 @@ Options:
 "
 }
 
+case "$1" in
+    init)
+	;;
+    create)
+	;;
+    apply)
+	;;
+    revert)
+	;;
+    *)
+	cli_help
+	;;
+esac
