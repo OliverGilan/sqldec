@@ -2,7 +2,7 @@ all: clean build
 
 clean: 
 	(cd sqldef && make clean)
-	rm -rf commands/psqldef
+	rm -rf commands/build
 
 build:
 	(cd sqldef && make build)
