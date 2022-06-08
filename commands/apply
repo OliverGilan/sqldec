@@ -12,4 +12,5 @@ Options:
 	--count n	Run N latest migrations.
 	I think the above option should be an argument like <migration-name>|<count>
 "
+	exit 1
 }

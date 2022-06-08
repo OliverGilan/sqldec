@@ -7,4 +7,5 @@ cli_help_init(){
 
 Usage: sqld init
 "
+	exit 1
 }

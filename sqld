@@ -2,7 +2,8 @@
 
 set -o errexit -o pipefail -o noclobber -o nounset
 
-workdir=TODO
+WORKDIR=$(cd $(dirname $0) && pwd)
+. "$WORKDIR/common"
 
 ! getopt --test > /dev/null 
 if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
@@ -34,6 +35,8 @@ Options:
     -c --config=path/to/config
     -h --help
 "
+
+	exit 1
 }
 
 case "$1" in

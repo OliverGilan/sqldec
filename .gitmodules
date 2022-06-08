@@ -1,0 +1,3 @@
+[submodule "sqldef"]
+	path = sqldef
+	url = https://github.com/k0kubun/sqldef.git

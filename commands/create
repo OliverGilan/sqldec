@@ -11,4 +11,5 @@ Arguments:
 
 Options:
 "
+	exit 1
 }
