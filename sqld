@@ -46,6 +46,7 @@ shift $((shifts-1))
 
 case "$1" in
     init)
+        # require_argument $DATABASE "DBName"
         . "$WORKDIR/commands/init"
 	    ;;
     create)

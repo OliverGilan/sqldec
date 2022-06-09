@@ -92,3 +92,11 @@ parse_options(){
         esac
     done
 }
+
+require_argument(){
+    if [ ! -z "${0:-}" ]; 
+    then 
+        echo "Argument $2 required"
+        exit 1 
+    fi 
+}
