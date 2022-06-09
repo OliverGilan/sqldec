@@ -14,6 +14,8 @@ fi
 
 parse_options "$@"
 
+echo $U $p
+
 cli_help(){
     cli_name=${0##*/}
     echo "
@@ -52,6 +54,6 @@ case "$1" in
     revert)
 	;;
     *)
-	cli_help
+	# cli_help
 	;;
 esac

@@ -19,9 +19,15 @@ log_conn_options(){
 }
 
 parse_options(){
-	LONGOPTS=user:,password:,port:,host:,name:,config:,help
-	OPTIONS=U:W:p:n:c:h
+    configFile="$WORKDIR/sqldec.config"
+    if [ -f "$configFile" ]; then
+        echo "reading config file $configFile"
+        . "$configFile"
+        echo "$PORT"
+    fi
 
+	LONGOPTS=user:,password:,port:,host:,name:,config:schema:,help
+	OPTIONS=U:W:p:h:n:c:s:
 	PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
 	if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
     		# e.g. return value is 1
@@ -32,7 +38,12 @@ parse_options(){
 	echo "parsed $PARSED"
 	eval set -- "$PARSED"
 
-    U=- W=- p=- n=- c=- h=n
+    if [ ! -z "${USERNAME:-}" ]; then U=$USERNAME; else U=-; fi 
+    if [ ! -z "${PASSWORD:-}" ]; then W=$PASSWORD; else W=-; fi 
+    if [ ! -z "${HOST:-}" ]; then h=$HOST; else h=-; fi 
+    if [ ! -z "${PORT:-}" ]; then p=$PORT; else p=-; fi 
+    if [ ! -z "${SCHEMA:-}" ]; then s=$SCHEMA; else s=-; fi 
+    if [ ! -z "${DATABASE:-}" ]; then n=$DATABASE; else n=-; fi 
     while true; do
         case "$1" in
             -U|--user)
@@ -41,6 +52,10 @@ parse_options(){
                 ;;
             -W|--password)
                 W="$2"
+                shift 2
+                ;;
+            -h|--host)
+                h="$2"
                 shift 2
                 ;;
             -p|--port)
@@ -55,7 +70,7 @@ parse_options(){
                 c="$2"
                 shift 2
                 ;;
-            -h|--help)
+            --help)
                 h=y
                 shift
                 ;;
