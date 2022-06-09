@@ -3,13 +3,16 @@
 set -o errexit -o pipefail -o noclobber -o nounset
 
 WORKDIR=$(cd $(dirname $0) && pwd)
-. "$WORKDIR/common"
+SQLDEF="$WORKDIR/commands/build/psqldef"
+. "$WORKDIR/common" "$@"
 
 ! getopt --test > /dev/null 
 if [[ ${PIPESTATUS[0]} -ne 4 ]]; then
     echo 'I’m sorry, `getopt --test` failed in this environment.'
     exit 1
 fi
+
+parse_options "$@"
 
 cli_help(){
     cli_name=${0##*/}
