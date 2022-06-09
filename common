@@ -21,13 +21,11 @@ log_conn_options(){
 parse_options(){
     configFile="$WORKDIR/sqldec.config"
     if [ -f "$configFile" ]; then
-        echo "reading config file $configFile"
         . "$configFile"
-        echo "$PORT"
     fi
 
-	LONGOPTS=user:,password:,port:,host:,name:,config:schema:,help
-	OPTIONS=U:W:p:h:n:c:s:
+	LONGOPTS=user:,password:,port:,name:,config:schema:,help,host:
+	OPTIONS=U:W:p:n:c:s:h
 	PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
 	if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
     		# e.g. return value is 1
@@ -35,52 +33,60 @@ parse_options(){
     		exit 2
 	fi
 
-	echo "parsed $PARSED"
 	eval set -- "$PARSED"
 
     if [ ! -z "${USERNAME:-}" ]; then U=$USERNAME; else U=-; fi 
     if [ ! -z "${PASSWORD:-}" ]; then W=$PASSWORD; else W=-; fi 
-    if [ ! -z "${HOST:-}" ]; then h=$HOST; else h=-; fi 
+    if [ ! -z "${HOST:-}" ]; then host=$HOST; else host=-; fi 
     if [ ! -z "${PORT:-}" ]; then p=$PORT; else p=-; fi 
     if [ ! -z "${SCHEMA:-}" ]; then s=$SCHEMA; else s=-; fi 
     if [ ! -z "${DATABASE:-}" ]; then n=$DATABASE; else n=-; fi 
+    h=n
+    shifts=$((0))
     while true; do
         case "$1" in
             -U|--user)
                 U="$2"
+                shifts=$((shifts+2))
                 shift 2
                 ;;
             -W|--password)
                 W="$2"
+                shifts=$((shifts+2))
                 shift 2
                 ;;
-            -h|--host)
-                h="$2"
+            --host)
+                host="$2"
+                shifts=$((shifts+2))
                 shift 2
                 ;;
             -p|--port)
                 p="$2"
+                shifts=$((shifts+2))
                 shift 2
                 ;;
             -n|--name)
                 n="$2"
+                shifts=$((shifts+2))
                 shift 2
                 ;;
             -c|--config)
                 c="$2"
+                shifts=$((shifts+2))
                 shift 2
                 ;;
-            --help)
+            -h|--help)
                 h=y
+                shifts=$((shifts+1))
                 shift
                 ;;
             --)
+                shifts=$((shifts+1))
                 shift
                 break
                 ;;
             *)
-                echo "$2"
-                echo "Unknown argument"
+                echo "Unknown argument $2"
                 exit 3
                 ;;
         esac

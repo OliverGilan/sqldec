@@ -14,8 +14,6 @@ fi
 
 parse_options "$@"
 
-echo $U $p
-
 cli_help(){
     cli_name=${0##*/}
     echo "
@@ -44,16 +42,19 @@ Options:
 	exit 1
 }
 
+shift $((shifts-1))
+
 case "$1" in
     init)
-	;;
+        . "$WORKDIR/commands/init"
+	    ;;
     create)
-	;;
+	    ;;
     apply)
-	;;
+	    ;;
     revert)
-	;;
+	    ;;
     *)
-	# cli_help
-	;;
+	    # cli_help
+	    ;;
 esac
