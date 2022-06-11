@@ -38,8 +38,8 @@ parse_options(){
     if [ ! -z "${USERNAME:-}" ]; then U=$USERNAME; else U=-; fi 
     if [ ! -z "${PASSWORD:-}" ]; then W=$PASSWORD; else W=-; fi 
     if [ ! -z "${HOST:-}" ]; then host=$HOST; else host=-; fi 
-    if [ ! -z "${PORT:-}" ]; then p=$PORT; else p=-; fi 
-    if [ ! -z "${SCHEMA:-}" ]; then s=$SCHEMA; else s=-; fi 
+    if [ ! -z "${PORT:-}" ]; then p=$PORT; else p=5432; fi 
+    if [ ! -z "${SCHEMA:-}" ]; then s=$SCHEMA; else s="schema.sql"; fi 
     if [ ! -z "${DATABASE:-}" ]; then n=$DATABASE; else n=-; fi 
     h=n
     shifts=$((0))

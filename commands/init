@@ -1,12 +1,30 @@
 #!/usr/bin/env bash
 
+# Enforce required arguments
 require_argument "${DATABASE:-}" "DBName"
+# require_argument "${}" ""
 
+# Initialize database
 if [ "$( psql -XtAc "SELECT 1 FROM pg_database WHERE datname='$DATABASE'" )" = '1' ]
 then
     echo "Database already exists"
 else
-    echo "Database does not exist"
+    echo "creating database"
+    shell $(createdb "$DATABASE")
+    shell $(createdb "$DATABASE-shadow")
+fi
+
+# Initialize schema file
+if [ ! -z "${s:-}" ];
+then
+    schemafilepath="$PWD/schema.sql"
+else
+    schemafilepath="$PWD/$s"
+fi
+
+if [ ! -f "$schemafilepath" ]; 
+then
+    touch "$schemafilepath"
 fi
 
 cli_help_init(){
