@@ -94,7 +94,8 @@ parse_options(){
 }
 
 require_argument(){
-    if [ ! -z "${0:-}" ]; 
+    echo "$1"
+    if [ -z "${0:-}" ]; 
     then 
         echo "Argument $2 required"
         exit 1 

@@ -46,16 +46,20 @@ shift $((shifts-1))
 
 case "$1" in
     init)
-        # require_argument $DATABASE "DBName"
-        . "$WORKDIR/commands/init"
+        echo "initing"
+        . "$WORKDIR/commands/init" "$@"
 	    ;;
     create)
+        . "$WORKDIR/commands/create" "$@"
 	    ;;
     apply)
+        . "$WORKDIR/commands/apply" "$@"
 	    ;;
     revert)
+        . "$WORKDIR/commands/revert" "$@"
 	    ;;
     *)
-	    # cli_help
+        echo "star"
+	    cli_help
 	    ;;
 esac

@@ -14,16 +14,31 @@ __Building from source__
 
 ### Usage
 
-`sqld init [options...]`
-Initializes database, schema, and migrations directory. If schema file and migrations directory already exists (if cloned from source control for example) then init will use those existing resources to initiate the database. As part of the initialization sqld will create a shadow database for the purposes of diffing. If no schema or migrations already exist then a base versioning schema will be created within the database to track versions.
+`sqld [options...] init <project-name>`
+Initializes database, schema, and migrations directory. Project name will be used to title the database. If schema file and migrations directory already exists (if cloned from source control for example) then init will use those existing resources to initiate the database. As part of the initialization sqld will create a shadow database for the purposes of diffing. If no schema or migrations already exist then a base versioning schema will be created within the database to track versions.
 
-`sqld create [options...] [<migration-name>]`
+`sqld [options...] create [<migration-name>]`
 Diffs the current database schema with the schema.sql file specified. If there is no difference then no migration scripts will be created. <migration-name> allows you to specify a human readable migration name. If no name is specified one will be generated automatically.
  This command simply creates the migration files but does not apply them. This allows you to modify the imperative migration scripts before applying the migration.
 
-`sqld apply [options...] [<migration-name>|<count>]`
+`sqld [options...] apply [<migration-name>|<count>]`
 Applies the latest migrations to the database. If a <migration-name> is specified then sqld will run all migrations up to and including the specified name. You can instead provide a <count> and sqld will run <count> migrations since the current version.
 
-`sqld rever [options...] [<migration-name>|<count>]`
-Reverts the latest migrations on the database. If <migration-name> is specified all migrations after and including <migration-name> will be reverted. Otherwise if <count> is specified the last <count> migrations will be reverted. By default only the latest migration is reverted.
+`sqld [options...] revert [<migration-name>|<count>]`
+Reverts the latest migrations on the database. If <migration-name> is specified all migrations after and including <migration-name> will be reverted. Otherwise if <count> is specified the last <count> migrations will be reverted. By default only the latest migration is reverted.    
+
+__Arguments__    
+`-c|--config=path\to\config` Specifies the config file to use with values for --dbname, --host, --port, --username, and --password. If this file is specified alongside other arguments, the supplied argument will override the value in the config.
+
+`-d|--dbname=dbname` Specifies the name of the database to connect to. If the project is already initialized with SQLD then the database name will be saved. Otherwise it must be specified.
+
+`-h|--host=hostname` The hostname to use when connecting to Postgres. Defaults to `localhost`.
+
+`-p|--port=port` The port to use when connecting to Postgres. Defaults to `5432`.
+
+`-s|--schema=schema` The name of the schema file to use. Defaults to `schema.sql`.
+
+`-U|--username=username` The username to use when connecting to Postgres. Defaults to `postgres`.
+
+`-W|--password=password` The password to use when connecting to Postgres.
 
