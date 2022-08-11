@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# 1. Retrieve latest version from DB
+# 2. Apply all migrations between the current version and the specified migration (latest by default)
+# 3. Update version in DB
 
 cli_help_apply(){
 	echo "

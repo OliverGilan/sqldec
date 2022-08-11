@@ -1,0 +1,1 @@
+./sqld -U olivergilan -p 5432 init

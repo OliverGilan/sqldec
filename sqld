@@ -39,14 +39,14 @@ Options:
     -h --help
 "
 
-	exit 1
+	exit 0
 }
 
 shift $((shifts-1))
 
-case "$1" in
+case "${1-default}" in
     init)
-        echo "initing"
+        echo "initializing"
         . "$WORKDIR/commands/init" "$@"
 	    ;;
     create)
@@ -59,7 +59,6 @@ case "$1" in
         . "$WORKDIR/commands/revert" "$@"
 	    ;;
     *)
-        echo "star"
 	    cli_help
 	    ;;
 esac

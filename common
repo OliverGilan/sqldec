@@ -19,11 +19,13 @@ log_conn_options(){
 }
 
 parse_options(){
+    # Source config file
     configFile="$WORKDIR/sqldec.config"
     if [ -f "$configFile" ]; then
         . "$configFile"
     fi
 
+    # Read command args
 	LONGOPTS=user:,password:,port:,name:,config:schema:,help,host:
 	OPTIONS=U:W:p:n:c:s:h
 	PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
@@ -32,21 +34,24 @@ parse_options(){
     		#  then getopt has complained about wrong arguments to stdout
     		exit 2
 	fi
-
 	eval set -- "$PARSED"
 
-    if [ ! -z "${USERNAME:-}" ]; then U=$USERNAME; else U=-; fi 
+    # Set defaults based on values in config 
+    if [ ! -z "${USERNAME:-}" ]; then U=$USERNAME; else U="postgres"; fi 
     if [ ! -z "${PASSWORD:-}" ]; then W=$PASSWORD; else W=-; fi 
     if [ ! -z "${HOST:-}" ]; then host=$HOST; else host=-; fi 
     if [ ! -z "${PORT:-}" ]; then p=$PORT; else p=5432; fi 
     if [ ! -z "${SCHEMA:-}" ]; then s=$SCHEMA; else s="schema.sql"; fi 
     if [ ! -z "${DATABASE:-}" ]; then n=$DATABASE; else n=-; fi 
     h=n
+    echo "$n"
+    # Override config values with command arguments
     shifts=$((0))
     while true; do
         case "$1" in
             -U|--user)
                 U="$2"
+                if [ -z "${n:-}" ]; then n=$U; fi 
                 shifts=$((shifts+2))
                 shift 2
                 ;;
@@ -91,10 +96,12 @@ parse_options(){
                 ;;
         esac
     done
+    echo "$n"
+    if [ -z "${n:-}" ]; then n=$U; fi 
+    echo "args: $U $W $host $p $s $n $h"
 }
 
 require_argument(){
-    echo "$1"
     if [ -z "${0:-}" ]; 
     then 
         echo "Argument $2 required"

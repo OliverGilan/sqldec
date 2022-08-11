@@ -1,23 +1,36 @@
 #!/usr/bin/env bash
 
+# 1. Connect to DB
+# 2. Create shadow DB if not exists
+# 3. Create migrations folder if not exists
+# 4. Create initial schema.sql file
+
 # Enforce required arguments
 require_argument "${n:-}" "DBName"
 # require_argument "${}" ""
 
-echo "init $1"
-
-if [ $h -eq y]
+if [ $h == y ]
 then
     cli_help_init
 fi
 
 # Initialize database
-if [ "$( psql -XtAc "SELECT 1 FROM pg_database WHERE datname='$n'" )" = '1' ]
+# query="psql -U $U -XtAc \"SELECT 1 FROM pg_database WHERE datname='$n'\""
+# echo "query: $query"
+if [ "$( psql -U $U -XtAc "SELECT 1 FROM pg_database WHERE datname='$n'" )" == '1' ]
 then
-    echo "Database already exists"
+    echo "database $n already exists"
 else
     echo "creating database"
     shell $(createdb "$n")
+fi
+
+# Initialize shadow db
+if [ "$( psql -U $U -XtAc "SELECT 1 FROM pg_database WHERE datname='$n-shadow'" )" == '1' ]
+then
+    echo "database $n-shadow already exists"
+else
+    echo "creating shadow database"
     shell $(createdb "$n-shadow")
 fi
 
@@ -28,11 +41,12 @@ then
 else
     schemafilepath="$PWD/$s"
 fi
-
+    # Create if not exists
 if [ ! -f "$schemafilepath" ]; 
 then
-    touch "$schemafilepath"
+    cat "$WORKDIR/default_schema.sql" > $schemafilepath
 fi
+    
 
 # Initialize migrations directory
 
@@ -42,5 +56,5 @@ cli_help_init(){
 
 Usage: sqld init
 "
-	exit 1
+	exit 0
 }

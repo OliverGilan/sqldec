@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-
+# 1. Connect to DB
+# 2. Generate diff as new migration-up
+# 3. Apply diff to shadow db and generate diff from current schema for migrate-down
 
 
 cli_help_create(){
