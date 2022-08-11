@@ -37,18 +37,20 @@ fi
 # Initialize schema file
 if [ ! -z "${s:-}" ];
 then
-    schemafilepath="$PWD/schema.sql"
+    schemaFilePath="$PWD/schema.sql"
 else
-    schemafilepath="$PWD/$s"
+    schemaFilePath="$PWD/$s"
 fi
-    # Create if not exists
-if [ ! -f "$schemafilepath" ]; 
+    # > Create if not exists
+if [ ! -f "$schemaFilePath" ]; 
 then
-    cat "$WORKDIR/default_schema.sql" > $schemafilepath
+    cat "$WORKDIR/default_schema.sql" > $schemaFilePath
 fi
     
 
 # Initialize migrations directory
+migrationsDir="$PWD/migrations"
+mkdir -p "$migrationsDir"
 
 cli_help_init(){
 
