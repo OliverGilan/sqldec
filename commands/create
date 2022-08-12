@@ -35,7 +35,7 @@ else
 fi
 
 # Generate diffs
-PGPASSWORD=$W psql -U $U -p $p -f $PWD/$s $n-shadow &>/dev/null
+PGPASSWORD=$W psql -U $U -p $p -f "$PWD/$s" "$n-shadow" &>/dev/null
 source=$(db_connection_string "$n")
 shadow=$(db_connection_string "$n-shadow")
 
@@ -46,11 +46,12 @@ echo "Down migration diff generated"
 
 
 # Bring shadowdb back in line with main
+PGPASSWORD=$W psql -U $U -p $p -f "$PWD/migrations/$mname/down.sql" "$n-shadow" &>/dev/null
 
 cli_help_create(){
 	echo "
 
-Usage: sqld create [options...] <migration-name>
+Usage: sqld [options...] create <migration-name>
 
 Arguments:
 	<migration-name>	The name of the migration
