@@ -23,17 +23,29 @@ else
     exit 0
 fi
 
-# Generate migrate-up file
+# Generate migration directory
+prefix=`date +'%Y%m%d'`
+mname="${prefix}_$2"
+if [ -d "$PWD/migrations/$mname" ]; 
+then 
+	echo "A migration with the name $mname already exists" 
+	exit 1
+else
+	mkdir -p "$PWD/migrations/$mname"
+fi
 
-
-
+# Generate diffs
 PGPASSWORD=$W psql -U $U -p $p -f $PWD/$s $n-shadow &>/dev/null
 source=$(db_connection_string "$n")
 shadow=$(db_connection_string "$n-shadow")
-echo "$source $shadow"
-migra --unsafe $source $shadow
+
+migra --unsafe $source $shadow > "$PWD/migrations/$mname/up.sql" &
+echo "Up migration diff generated"
+migra --unsafe $shadow $source > "$PWD/migrations/$mname/down.sql" &
+echo "Down migration diff generated"
 
 
+# Bring shadowdb back in line with main
 
 cli_help_create(){
 	echo "
