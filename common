@@ -39,7 +39,7 @@ parse_options(){
     # Set defaults based on values in config 
     if [ ! -z "${USERNAME:-}" ]; then U=$USERNAME; else U="postgres"; fi 
     if [ ! -z "${PASSWORD:-}" ]; then W=$PASSWORD; else W=-; fi 
-    if [ ! -z "${HOST:-}" ]; then host=$HOST; else host=-; fi 
+    if [ ! -z "${HOST:-}" ]; then host=$HOST; else host="localhost"; fi 
     if [ ! -z "${PORT:-}" ]; then p=$PORT; else p=5432; fi 
     if [ ! -z "${SCHEMA:-}" ]; then s=$SCHEMA; else s="schema.sql"; fi 
     if [ ! -z "${DATABASE:-}" ]; then n=$DATABASE; else n=-; fi 
@@ -107,4 +107,22 @@ require_argument(){
         echo "Argument $2 required"
         exit 1 
     fi 
+}
+
+connect_to_db(){
+    if [ "$( PGPASSWORD=$W psql -U $U -p $p -XtAc "SELECT 1 FROM pg_database WHERE datname='$n'" )" == '1' ]
+    then
+        echo 0
+    else
+        echo 1
+    fi
+}
+
+db_connection_string(){
+    if [ -z "${1:-}" ]; then 
+        echo "must supply db name"
+        exit 1
+    fi 
+    if [ -z "${W+}" ]; then local pass=""; else local pass=":$W"; fi
+    echo "postgresql://$U$pass@$host:$p/$1"
 }

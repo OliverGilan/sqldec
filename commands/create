@@ -5,6 +5,36 @@
 # 3. Apply diff to shadow db and generate diff from current schema for migrate-down
 
 
+require_argument "${n:-}" "DBName"
+
+
+if [ $h == y ]
+then
+    cli_help_init
+    exit 0
+fi
+
+# Ensure connection to DB is possible
+if [ $(connect_to_db) == 0 ]
+then
+    echo "database $n connection established"
+else
+    echo "could not connect to database"
+    exit 0
+fi
+
+# Generate migrate-up file
+
+
+
+PGPASSWORD=$W psql -U $U -p $p -f $PWD/$s $n-shadow &>/dev/null
+source=$(db_connection_string "$n")
+shadow=$(db_connection_string "$n-shadow")
+echo "$source $shadow"
+migra --unsafe $source $shadow
+
+
+
 cli_help_create(){
 	echo "
 
