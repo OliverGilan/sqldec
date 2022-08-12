@@ -44,7 +44,7 @@ parse_options(){
     if [ ! -z "${SCHEMA:-}" ]; then s=$SCHEMA; else s="schema.sql"; fi 
     if [ ! -z "${DATABASE:-}" ]; then n=$DATABASE; else n=-; fi 
     h=n
-    echo "$n"
+
     # Override config values with command arguments
     shifts=$((0))
     while true; do
@@ -96,13 +96,21 @@ parse_options(){
                 ;;
         esac
     done
-    echo "$n"
+
     if [ -z "${n:-}" ]; then n=$U; fi 
     echo "args: $U $W $host $p $s $n $h"
 }
 
+require_parameter(){
+    if [ -z "${1:-}" ]; 
+    then 
+        echo "Parameter $2 required"
+        exit 1 
+    fi 
+}
+
 require_argument(){
-    if [ -z "${0:-}" ]; 
+    if [ -z "${1:-}" ]; 
     then 
         echo "Argument $2 required"
         exit 1 

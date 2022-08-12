@@ -6,7 +6,7 @@
 
 
 require_argument "${n:-}" "DBName"
-
+require_parameter "${2:-}" "migration_name"
 
 if [ $h == y ]
 then
