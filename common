@@ -143,3 +143,11 @@ dump_schema(){
     if [ -z "${W+}" ]; then local pass=""; else local pass=":$W"; fi
     shell $(PGPASSWORD=$W pg_dump --schema-only -h $host -p $p -U $U $1)
 }
+
+current_version(){
+    echo "$(PGPASSWORD=$W psql -U $U -p $p -XtAc "SELECT current_migration FROM psqldec.version ORDER BY v DESC LIMIT 1;" "$n")"
+}
+
+migration_prefix(){
+    echo `date +'%Y%m%d%H%M%S'`
+}

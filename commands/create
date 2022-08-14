@@ -10,7 +10,7 @@ require_parameter "${2:-}" "migration_name"
 
 if [ $h == y ]
 then
-    cli_help_init
+    cli_help_create
     exit 0
 fi
 
@@ -24,7 +24,7 @@ else
 fi
 
 # Generate migration directory
-prefix=`date +'%Y%m%d'`
+prefix=`date +'%Y%m%d%H%M%S'`
 mname="${prefix}_$2"
 if [ -d "$PWD/migrations/$mname" ]; 
 then 

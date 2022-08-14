@@ -4,9 +4,33 @@
 # 2. Apply all migrations between the current version and the specified migration (latest by default)
 # 3. Update version in DB
 
+if [ $h == y ]
+then
+    cli_help_apply
+    exit 0
+fi
+
+# Ensure connection to DB is possible
+if [ $(connect_to_db) == 0 ]
+then
+    echo "database $n connection established"
+else
+    echo "could not connect to database"
+    exit 0
+fi
+
+# Retrieve current version
+version=$(current_version)
+if [ -z $version ];
+then
+	echo "empty"
+else
+	echo "$version"
+fi
+
 cli_help_apply(){
 	echo "
-Usage: sqld apply [options...] [<migration-name>]
+Usage: sqld [options...] apply [<migration-name>]
 
 Arguments:
 	<migration-name>	Optional. Runs specific migration. By default runs all the latest migrations since the latest run.
