@@ -2,3 +2,4 @@
 # test config file
 sqldec.config
 .vscode/
+migrations/

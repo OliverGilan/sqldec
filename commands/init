@@ -44,7 +44,7 @@ fi
 PGPASSWORD=$W psql -U $U -p $p -f "$PWD/$s" "$n" &>/dev/null
 PGPASSWORD=$W psql -U $U -p $p -f "$PWD/$s" "$n-shadow" &>/dev/null
 prefix=$(migration_prefix)
-PGPASSWORD=$W psql -U $U -p $p -XtAc "INSERT INTO psqldec.version(current_migration) VALUES('${prefix}_init');" "$n"
+# PGPASSWORD=$W psql -U $U -p $p -XtAc "INSERT INTO sqldec.version(current_migration) VALUES('${prefix}_init');" "$n"
 
 # Initialize migrations directory
 migrationsDir="$PWD/migrations"

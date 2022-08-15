@@ -19,14 +19,40 @@ else
     exit 0
 fi
 
-# Retrieve current version
+# Retrieve current version & migrations to apply
 version=$(current_version)
+files=(migrations/*)
+migrations_to_apply=()
 if [ -z $version ];
 then
-	echo "empty"
+	echo "no active migration"
+	migrations_to_apply=("${files[@]}")
 else
-	echo "$version"
+	echo "current version $version"
+	currVer=$(echo "${version}" | cut -d "_" -f 1)
+	# If not first migration then only take migrations after the current version
+	for f in "${files[@]}"; do
+		filename=$(echo "${f}" | cut -d "/" -f 2)
+		timestamp=$(echo "${filename}" | cut -d "_" -f 1)
+		if [ "$timestamp" -gt "$currVer" ]; then
+			migrations_to_apply+=("$f")
+		fi
+	done
 fi
+
+# Apply migrations
+echo "${#migrations_to_apply[@]} migrations to apply"
+for m in "${migrations_to_apply[@]}"; do
+	echo "applying ${m}"
+	migration="$PWD/$m/up.sql"
+	PGPASSWORD=$W psql -U $U -p $p -f "$migration" "$n" &>/dev/null
+	PGPASSWORD=$W psql -U $U -p $p -f "$migration" "$n-shadow" &>/dev/null
+	last="$m"
+done
+
+# Update version
+lastMigrationName=$(echo "${last}" | cut -d "/" -f 2)
+PGPASSWORD=$W psql -U $U -p $p -XtAc "INSERT INTO sqldec.version(current_migration) VALUES('${lastMigrationName}');" "$n"
 
 cli_help_apply(){
 	echo "
