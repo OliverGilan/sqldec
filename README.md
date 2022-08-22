@@ -1,5 +1,7 @@
 # SQLDec
 
+!\[version badge\](https://img.shields.io/static/v1?label=version&message=v0.1.0&color=blue)
+
 ### Summary
 Whenever one works with a relational database the issue arises of how to effectively implement and track changes to the schema over time. There are two main methodologies for accomplishing this today: diffing and imperative migrations. With the diffing approach there is usually a declarative schema that is designed to reflect the _current state_ of the database schema. To make a change one needs to only update the declarative schema and the diffing tool will compare the new schema against the database and generate the DDL required to bring the database in line with the new changes. The pros of this approach is it's easy to use and one can easily see what the current state of the schema is quite easily. The downside to this approach is automatic diffing is often not perfect and can cause data loss.
 The second approach is imperative migrations where the user directly describes how the schema and data should change with each migration. This allows a lot more control over the migration but can be a little harder to implement & these migration scripts can often pile up making it difficult to see the full picture of the database schema at any given moment.
