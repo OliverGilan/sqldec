@@ -4,6 +4,90 @@
 # 2. Apply all down migrations to specified migration
 # 3. Update version in DB
 
+if [ $h = y ]
+then
+    cli_help_apply
+    exit 0
+fi
+
+if [ ! -z "${2:-}" ]; then arg2=$2; else arg2=1; fi 
+re='^[0-9]+$'
+if [[ ${arg2:-} =~ $re ]] ; then
+   echo "Reverting $arg2 migrations"
+	 steps=$arg2
+fi
+
+if [ $cp = y ]; then
+	require_parameter "${2:-}" "migration_name"
+	if [ ! -z "${steps:-}" ]; then echo "must supply migration name when cherry picking" & exit 1; fi
+	cpname=$arg2
+fi
+
+
+# Ensure connection to DB is possible
+if [ $(connect_to_db) == 0 ]
+then
+    echo "database $n connection established"
+else
+    echo "could not connect to database"
+    exit 0
+fi
+
+# Find current version
+version=$(current_version)
+if [ -z $version ];
+then
+	echo "no current version. nothing to migrate"
+	exit 1
+fi
+
+# Find migrations to apply
+files=(migrations/*)
+migrations_to_apply=()
+rev=()
+for (( i=${#files[@]};i;i--));do
+	rev+=("${files[$i-1]}")
+done
+for migration in "${rev[@]}"; do
+	filename=$(echo "${migration}" | cut -d "/" -f 2)
+	timestamp=$(echo "${filename}" | cut -d "_" -f 1)
+	nextVer=$migration
+	if [ ${steps:-} -eq 0 ]; then ((steps--)) && break; fi
+	if [ $cp = y ]; 
+	then
+		if [ "$filename" = "${cpname:-}" ]; 
+		then 
+			migrations_to_apply+=("$migration")
+			steps=0
+			break
+		fi
+	else
+		currVer=$(echo "${version}" | cut -d "_" -f 1)
+		if [ "$filename" = "$version" ] || [ "$timestamp" -lt "$currVer" ]; 
+		then 
+			migrations_to_apply+=("$migration")
+			((steps--))
+		fi
+	fi
+done
+
+if [ ${steps:-} -eq 0 ]; then nextVer="0_init"; fi
+
+# Apply migrations
+echo "${#migrations_to_apply[@]} migrations to apply"
+if [ ${#migrations_to_apply[@]} -eq 0 ]; then exit 0; fi
+for m in "${migrations_to_apply[@]}"; do
+	echo "applying ${m}"
+	migration="$PWD/$m/down.sql"
+	PGPASSWORD=$W psql -U $U -p $p -f "$migration" "$n" &>/dev/null
+	PGPASSWORD=$W psql -U $U -p $p -f "$migration" "$n-shadow" &>/dev/null
+done
+echo "Version is now ${nextVer}"
+
+# Update version
+lastMigrationName=$(echo "${nextVer}" | cut -d "/" -f 2)
+PGPASSWORD=$W psql -U $U -p $p -XtAc "INSERT INTO sqldec.version(current_migration) VALUES('${lastMigrationName}');" "$n"
+
 cli_help_revert(){
 	
 	echo "
