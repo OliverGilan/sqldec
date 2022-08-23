@@ -7,7 +7,6 @@
 
 # Enforce required arguments
 require_argument "${n:-}" "DBName"
-# require_argument "${}" ""
 
 if [ $h == y ]
 then
@@ -16,8 +15,6 @@ then
 fi
 
 # Initialize database
-# query="psql -U $U -XtAc \"SELECT 1 FROM pg_database WHERE datname='$n'\""
-# echo "query: $query"
 if [ "$( psql -U $U -XtAc "SELECT 1 FROM pg_database WHERE datname='$n'" )" == '1' ]
 then
     echo "database $n already exists"

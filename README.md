@@ -1,20 +1,25 @@
 # SQLDec
 
-!\[version badge\](https://img.shields.io/static/v1?label=version&message=v0.1.0&color=blue)
+![version badge](https://img.shields.io/static/v1?label=version&message=v0.1.0&color=blue)
 
-### Summary
-Whenever one works with a relational database the issue arises of how to effectively implement and track changes to the schema over time. There are two main methodologies for accomplishing this today: diffing and imperative migrations. With the diffing approach there is usually a declarative schema that is designed to reflect the _current state_ of the database schema. To make a change one needs to only update the declarative schema and the diffing tool will compare the new schema against the database and generate the DDL required to bring the database in line with the new changes. The pros of this approach is it's easy to use and one can easily see what the current state of the schema is quite easily. The downside to this approach is automatic diffing is often not perfect and can cause data loss.
-The second approach is imperative migrations where the user directly describes how the schema and data should change with each migration. This allows a lot more control over the migration but can be a little harder to implement & these migration scripts can often pile up making it difficult to see the full picture of the database schema at any given moment.
-One feature of modern ORM's and database tools like Prisma and Edgedb is the ability to easily handle database migrations through a combination of diffing and manual migrations but they almost all rely on a custom schema DDL language. This project is designed to implement a similar experience but using plain SQL for the schema. 
+## Summary
+Whenever one works with a relational database the issue arises of how to effectively implement and track changes to the schema over time. ORM's like ActiveRecord and more recently Prisma provide tools specifically to easily manage these schema changes in the form of database migrations. The idea is to have one file that acts as a _declarative schema_ which always represents the current state of the database at any given point in time. When you want to change that schema you simply edit that declarative file and automatically generate the SQL to transform the database to bring it in line with what the new schema file. You can then apply and revert these migrations to efficiently manage the state of your database's schema. 
 
-### Installation
-__Homebrew__
+The drawback of tools like Prisma and ActiveRecord is they require one to write the schema file using a custom DDL which I often find to be unnecessary overhead. Whenever I try to create a schema using some new graph DDL I find myself manually trying to understand how they're converting the schema into an SQL representation.
 
-__Binaries__
+SQLDec takes the concept of declarative schema and easy migrations and allows one to do all of it with simply SQL.
+
+## Installation
+### Prerequisites 
+SQLDec requires [migra](https://github.com/djrobstep/migra) to be installed and available via the commandline.
 
 __Building from source__
 
-### Usage
+SQLDec is currently written completely in Bash. As a result you can simply clone this repository and place somewhere in your PATH.
+
+## Usage
+
+## Reference
 
 `sqld [options...] init <project-name>`
 Initializes database, schema, and migrations directory. Project name will be used to title the database. If schema file and migrations directory already exists (if cloned from source control for example) then init will use those existing resources to initiate the database. As part of the initialization sqld will create a shadow database for the purposes of diffing. If no schema or migrations already exist then a base versioning schema will be created within the database to track versions.
@@ -30,8 +35,6 @@ Applies the latest migrations to the database. If a <migration-name> is specifie
 Reverts the latest migrations on the database. If <migration-name> is specified all migrations after and including <migration-name> will be reverted. Otherwise if <count> is specified the last <count> migrations will be reverted. By default only the latest migration is reverted.    
 
 __Arguments__    
-`-c|--config=path\to\config` Specifies the config file to use with values for --dbname, --host, --port, --username, and --password. If this file is specified alongside other arguments, the supplied argument will override the value in the config.
-
 `-d|--dbname=dbname` Specifies the name of the database to connect to. If the project is already initialized with SQLD then the database name will be saved. Otherwise it must be specified.
 
 `-h|--host=hostname` The hostname to use when connecting to Postgres. Defaults to `localhost`.
@@ -44,3 +47,15 @@ __Arguments__
 
 `-W|--password=password` The password to use when connecting to Postgres.
 
+## Roadmap
+- [ ] Lock file for migrations scripts
+- [ ] Bring interface more in line with Prisma
+- [ ] Decouple logic from Postgres to support more databases
+- [ ] Re-implement in Rust for fun and profit
+- [ ] Add verbose mode
+- [ ] Distribute on Homebrew
+- [ ] Move migrations and schema to dedicated `db` directory
+- [ ] Support multiple schema files
+- [ ] Decouple reliance on `migra.` Either bundle their Dockerfile (then Docker would be required) or use some other diff tool.
+- [ ] Proper command reference
+- [ ] Usage tutorial
