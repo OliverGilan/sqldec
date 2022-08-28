@@ -1,6 +1,7 @@
 # SQLDec
 
 ![version badge](https://img.shields.io/static/v1?label=version&message=v0.1.0&color=blue)
+![license badge](https://img.shields.io/github/license/olivergilan/sqldec)
 
 ## Summary
 Whenever one works with a relational database the issue arises of how to effectively implement and track changes to the schema over time. ORM's like ActiveRecord and more recently Prisma provide tools specifically to easily manage these schema changes in the form of database migrations. The idea is to have one file that acts as a _declarative schema_ which always represents the current state of the database at any given point in time. When you want to change that schema you simply edit that declarative file and automatically generate the SQL to transform the database to bring it in line with what the new schema file. You can then apply and revert these migrations to efficiently manage the state of your database's schema. 
