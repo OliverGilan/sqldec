@@ -121,18 +121,21 @@ This doesn't change your schema file but it _does_ change the schema of your act
 
 ## Reference
 
-`sqld [options...] init <project-name>`
-Initializes database, schema, and migrations directory. Project name will be used to title the database. If schema file and migrations directory already exists (if cloned from source control for example) then init will use those existing resources to initiate the database. As part of the initialization sqld will create a shadow database for the purposes of diffing. If no schema or migrations already exist then a base versioning schema will be created within the database to track versions.
+`sqld [options...] init <database-name>`
 
-`sqld [options...] create [<migration-name>]`
-Diffs the current database schema with the schema.sql file specified. If there is no difference then no migration scripts will be created. <migration-name> allows you to specify a human readable migration name. If no name is specified one will be generated automatically.
- This command simply creates the migration files but does not apply them. This allows you to modify the imperative migration scripts before applying the migration.
+Initializes database, schema, and migrations directory. If schema file and migrations directory already exists (if cloned from source control for example) then init will use those existing resources to initiate the database. As part of the initialization sqld will create a shadow database for the purposes of diffing. If no schema or migrations already exist then a base versioning schema will be created within the database to track versions.
 
-`sqld [options...] apply [<migration-name>|<count>]`
-Applies the latest migrations to the database. If a <migration-name> is specified then sqld will run all migrations up to and including the specified name. You can instead provide a <count> and sqld will run <count> migrations since the current version.
+`sqld [options...] create <migration-name>`
 
-`sqld [options...] revert [<migration-name>|<count>]`
-Reverts the latest migrations on the database. If <migration-name> is specified all migrations after and including <migration-name> will be reverted. Otherwise if <count> is specified the last <count> migrations will be reverted. By default only the latest migration is reverted.    
+Diffs the current database schema with the schema.sql file specified. If there is no difference then no migration scripts will be created. <migration-name> allows you to specify a human readable migration name. This name will be prefixed with a timestamp. This command simply creates the migration files but does not apply them. This allows you to modify the imperative migration scripts before applying the migration.
+
+`sqld [options...] [--cherry-pick] apply [<migration-name>]`
+
+Applies the latest migrations to the database. If a <migration-name> is specified then sqld will run all migrations up to and including the specified name. If no migration-name is supplied then all the latest migrations will be run. If you just want to apply a specific migration out of order then use the `--cherry-pick` flag and supply the `migration-name`.
+
+`sqld [options...] [--cherry-pick] revert [<migration-name>|<count>]`
+
+Reverts the latest migration on the database. If a `count` is specified sqld will revert `count` migrations. To revert a single migration out of order use the `cherry-pick` flag and supply a `migration-name`. By default only the last migration is reverted.
 
 __Arguments__    
 `-n|--name=dbname` Specifies the name of the database to connect to
@@ -148,6 +151,7 @@ __Arguments__
 `-W|--password=password` The password to use when connecting to Postgres.
 
 ## Roadmap
+- [ ] Make sure command reference is accurate
 - [ ] Lock file for migrations scripts
 - [ ] Bring interface more in line with Prisma
 - [ ] Decouple logic from Postgres to support more databases
@@ -157,5 +161,4 @@ __Arguments__
 - [ ] Move migrations and schema to dedicated `db` directory
 - [ ] Support multiple schema files
 - [ ] Decouple reliance on `migra.` Either bundle their Dockerfile (then Docker would be required) or use some other diff tool.
-- [ ] Proper command reference
 - [ ] Usage tutorial
